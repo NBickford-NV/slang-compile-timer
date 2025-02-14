@@ -29,7 +29,7 @@ public:
     // Set up default options and target
     m_options = {{slang::CompilerOptionName::EmitSpirvDirectly, {slang::CompilerOptionValueKind::Int, 1}},        //
                  {slang::CompilerOptionName::VulkanUseEntryPointName, {slang::CompilerOptionValueKind::Int, 1}},  //
-                 {slang::CompilerOptionName::Optimization, {slang::CompilerOptionValueKind::Int, 1}}};
+                 {slang::CompilerOptionName::Optimization, {slang::CompilerOptionValueKind::Int, 0}}};
     m_targets = {slang::TargetDesc{.format = SLANG_SPIRV, .profile = m_globalSession->findProfile("spirv_1_6")}};
     return true;
   }
