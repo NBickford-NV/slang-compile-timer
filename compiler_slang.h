@@ -27,7 +27,6 @@
 // #define IMPLEMENT_FILESYSTEMEXT
 
 // Turns off as many validation settings as possible.
-// This makes compilation take about 0.6x as long.
 #define NO_VALIDATION
 
 #include "utilities.h"
