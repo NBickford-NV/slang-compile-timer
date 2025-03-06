@@ -8,16 +8,19 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <optional>
 #include <stddef.h>
 #include <stdio.h>
 #include <string>
+#include <type_traits>
 
 namespace fs = std::filesystem;
 using timer  = std::chrono::high_resolution_clock;
 
 // Loads a file from a path; returns empty on failure.
-std::optional<std::string> load_file(const char* filename)
+template <class file_char_type>
+std::optional<std::string> load_file(const file_char_type* filename)
 {
   try
   {
@@ -27,7 +30,14 @@ std::optional<std::string> load_file(const char* filename)
     if(size_signed < 0)
     {
 #ifdef VERBOSE
-      fprintf(stderr, "Could not load %s: size was negative.\n", filename);
+      if constexpr(std::is_same_v<file_char_type, wchar_t>)
+      {
+        fprintf(stderr, "Could not load %S: size was negative\n", filename);
+      }
+      else
+      {
+        fprintf(stderr, "Could not load %s: size was negative\n", filename);
+      }
 #endif
       return {};
     }
@@ -36,13 +46,27 @@ std::optional<std::string> load_file(const char* filename)
     std::string  result(size, '\0');
     file.seekg(0, std::ios::beg);
     file.read(result.data(), size_signed);
-    fprintf(stderr, "Loaded %s; %zu bytes.\n", filename, size);
+    if constexpr(std::is_same_v<file_char_type, wchar_t>)
+    {
+      fprintf(stderr, "Loaded %S; size %zu bytes.\n", filename, size);
+    }
+    else
+    {
+      fprintf(stderr, "Loaded %s; size %zu bytes.\n", filename, size);
+    }
     return {result};  // Success!
   }
   catch(const std::exception& e)
   {
 #ifdef VERBOSE
-    fprintf(stderr, "Caught exception while trying to read %s: %s\n", filename, e.what());
+    if constexpr(std::is_same_v<file_char_type, wchar_t>)
+    {
+      fprintf(stderr, "Caught exception while trying to read %S: %s\n", filename, e.what());
+    }
+    else
+    {
+      fprintf(stderr, "Caught exception while trying to read %s: %s\n", filename, e.what());
+    }
 #endif
   }
   return {};  // Only reached on exception

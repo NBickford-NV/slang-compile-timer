@@ -27,7 +27,7 @@
 // #define IMPLEMENT_FILESYSTEMEXT
 
 // Turns off as many validation settings as possible.
-#define NO_VALIDATION
+#define SLANG_HELPER_NO_VALIDATION
 
 #include "utilities.h"
 
@@ -131,7 +131,7 @@ public:
         {slang::CompilerOptionName::MinimumSlangOptimization, {slang::CompilerOptionValueKind::Int, 1}},  //
         {slang::CompilerOptionName::Capability,
          {slang::CompilerOptionValueKind::Int, m_globalSession->findCapability("spvRayQueryKHR")}},
-#ifdef NO_VALIDATION
+#ifdef SLANG_HELPER_NO_VALIDATION
         {slang::CompilerOptionName::SkipSPIRVValidation, {slang::CompilerOptionValueKind::Int, 1}},             //
         {slang::CompilerOptionName::DisableNonEssentialValidations, {slang::CompilerOptionValueKind::Int, 1}},  //
         {slang::CompilerOptionName::ValidateIr, {slang::CompilerOptionValueKind::Int, 0}},         // (default value)
@@ -332,6 +332,8 @@ public:
       *outBlob = blob;
       // The blob should have a reference count of at least 2; one in
       // m_moduleCache, and the other in the pointer we're returning.
+      // It can have a larger number if we're not implementing IFilesystemEXT
+      // and Slang has its own file cache.
       blob->addRef();
       assert(blob->addRef() >= 3 && blob->release());
       return SLANG_OK;

@@ -1,3 +1,6 @@
+#ifdef HAS_DXC
+#include "compiler_dxc.h"
+#endif
 #ifdef HAS_SHADERC
 #include "compiler_shaderc.h"
 #endif
@@ -98,6 +101,7 @@ int main(int argc, char* argv[])
   size_t      num_repetitions = 128;
   bool        enable_glsl     = false;
   bool        test_shaderc    = false;
+  bool test_dxc = false;
   const char* filename        = "shader.slang";
   for(int argi = 1; argi < argc; argi++)
   {
@@ -127,6 +131,12 @@ int main(int argc, char* argv[])
       test_shaderc = true;
     }
 #endif
+#ifdef HAS_DXC
+    else if (strcmp("--dxc", arg) == 0)
+    {
+        test_dxc = true;
+    }
+#endif
     else
     {
       filename = arg;
@@ -142,7 +152,7 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  if(!test_shaderc)
+  if(!test_shaderc && !test_dxc)
   {
     if(!benchmark<SlangCompilerHelper>(shader_path.c_str(), shader_code.value().c_str(), num_repetitions, enable_glsl))
     {
@@ -157,6 +167,16 @@ int main(int argc, char* argv[])
     {
       return EXIT_FAILURE;
     }
+  }
+#endif
+
+#ifdef HAS_DXC
+  if (test_dxc)
+  {
+      if (!benchmark<DXCompilerHelper>(shader_path.c_str(), shader_code.value().c_str(), num_repetitions, enable_glsl))
+      {
+          return EXIT_FAILURE;
+      }
   }
 #endif
 
