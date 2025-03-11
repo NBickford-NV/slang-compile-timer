@@ -46,7 +46,7 @@ slang-compile-timer --shaderc examples/pathtrace-glsl/gltf_pathtrace.comp.glsl
 slang-compile-timer --dxc examples/pathtrace-hlsl/gltf_pathtrace.hlsl
 ```
 
-These were modified from https://github.com/nvpro-samples/vk_mini_samples/tree/main/samples/gltf_raytrace.
+These were modified from https://github.com/nvpro-samples/nvpro_core/tree/master/nvvkhl/shaders and https://github.com/nvpro-samples/vk_mini_samples/tree/main/samples/gltf_raytrace.
 
 By default, the Slang compiler helper will cache modules and avoid validation
 for optimal performance. These settings can be changed using the preprocessor
